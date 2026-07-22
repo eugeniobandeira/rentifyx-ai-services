@@ -10,7 +10,7 @@ The repository follows the same high-level pattern used by the neighboring Renti
 
 ## Current state
 
-- `src/Functions/Moderation/RentifyxAiServices.Moderation/` — implemented (E-02): `ModerationHandler.cs`, `ModerationService.cs`, `AssetKeyConventionFilter.cs`, `RekognitionModerationClient.cs`, `ThresholdEvaluator.cs`, `KafkaModerationEventPublisher.cs`, `ModerationScanResult.cs`, plus their `I*` interfaces.
+- `src/Functions/Moderation/RentifyxAiServices.Moderation/` — implemented (E-02). `ModerationHandler.cs` (entrypoint) and `ModerationService.cs` (orchestrator) at root; each collaborator grouped with its interface in its own subfolder, mirroring `Shared`'s `Events/`/`Idempotency/`/`Kafka/` pattern: `KeyConvention/` (`IKeyConventionFilter`, `AssetKeyConventionFilter`), `Rekognition/` (`IRekognitionModerationClient`, `RekognitionModerationClient`, `ModerationScanResult`), `Threshold/` (`IThresholdEvaluator`, `ThresholdEvaluator`), `Publishing/` (`IModerationEventPublisher`, `KafkaModerationEventPublisher`).
 - `src/Functions/Enrichment/RentifyxAiServices.Enrichment/` — placeholder `Class1.cs` only.
 - `src/Functions/Dedupe/RentifyxAiServices.Dedupe/` — placeholder `Class1.cs` only.
 - `src/Shared/RentifyxAiServices.Shared/` — `Events/` (event contracts), `Idempotency/` (DynamoDB idempotency store), `Kafka/` (generic event publisher).
