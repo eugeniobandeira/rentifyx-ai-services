@@ -32,6 +32,44 @@ data "aws_iam_policy_document" "moderation" {
 
     resources = ["${var.media_bucket_arn}/*"]
   }
+
+  statement {
+    sid    = "IdempotencyTableWrite"
+    effect = "Allow"
+
+    actions = ["dynamodb:PutItem"]
+
+    resources = [var.moderation_idempotency_table_arn]
+  }
+
+  statement {
+    sid    = "KafkaPublishVerdict"
+    effect = "Allow"
+
+    # MSK IAM auth actions do not support wildcard resources beyond cluster/topic ARNs.
+    actions = [
+      "kafka-cluster:Connect",
+      "kafka-cluster:DescribeTopic",
+      "kafka-cluster:WriteData",
+    ]
+
+    resources = [
+      var.moderation_kafka_cluster_arn,
+      var.moderation_kafka_topic_arn,
+    ]
+  }
+
+  statement {
+    sid    = "ReviewQueueAndDlqSend"
+    effect = "Allow"
+
+    actions = ["sqs:SendMessage"]
+
+    resources = [
+      var.moderation_review_queue_arn,
+      var.moderation_failure_dlq_arn,
+    ]
+  }
 }
 
 resource "aws_iam_role" "moderation" {
