@@ -43,6 +43,10 @@
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.9" />
   </ItemGroup>
 
+  <ItemGroup Label="Analyzers">
+    <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.27.0.140913" />
+  </ItemGroup>
+
   <ItemGroup Label="Tests">
     <PackageVersion Include="Bogus" Version="35.6.1" />
     <PackageVersion Include="coverlet.collector" Version="6.0.4" />

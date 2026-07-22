@@ -1,0 +1,66 @@
+# Build outputs
+bin/
+obj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider
+.idea/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# .NET
+*.dll
+*.exe
+*.pdb
+
+# ASP.NET
+wwwroot/
+
+# Environment / secrets
+.env
+.env.*
+appsettings.*.json
+!appsettings.json
+!appsettings.Development.json
+!appsettings.Test.json
+!appsettings.Production.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Claude Code agent workspace (worktrees, task outputs, memory)
+.claude/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+backend.hcl
+crash.log
+override.tf
+override.tf.json
+
+# Logs
+*.log
+logs/
+
+# Test results
+TestResults/
+coverage/
+*.coverage
+*.coveragexml

@@ -1,0 +1,22 @@
+<Solution>
+  <Folder Name="/src/" />
+  <Folder Name="/src/Functions/" />
+  <Folder Name="/src/Functions/Dedupe/">
+    <Project Path="src/Functions/Dedupe/RentifyxAiServices.Dedupe/RentifyxAiServices.Dedupe.csproj" />
+  </Folder>
+  <Folder Name="/src/Functions/Enrichment/">
+    <Project Path="src/Functions/Enrichment/RentifyxAiServices.Enrichment/RentifyxAiServices.Enrichment.csproj" />
+  </Folder>
+  <Folder Name="/src/Functions/Moderation/">
+    <Project Path="src/Functions/Moderation/RentifyxAiServices.Moderation/RentifyxAiServices.Moderation.csproj" />
+  </Folder>
+  <Folder Name="/src/Shared/">
+    <Project Path="src/Shared/RentifyxAiServices.Shared/RentifyxAiServices.Shared.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/RentifyxAiServices.Enrichment.Tests/RentifyxAiServices.Enrichment.Tests.csproj" />
+    <Project Path="tests/RentifyxAiServices.IntegrationTests/RentifyxAiServices.IntegrationTests.csproj" />
+    <Project Path="tests/RentifyxAiServices.Moderation.Tests/RentifyxAiServices.Moderation.Tests.csproj" />
+    <Project Path="tests/RentifyxAiServices.Shared.Tests/RentifyxAiServices.Shared.Tests.csproj" />
+  </Folder>
+</Solution>
