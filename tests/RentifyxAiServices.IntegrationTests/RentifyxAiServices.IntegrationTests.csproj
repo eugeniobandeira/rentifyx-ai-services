@@ -19,10 +19,18 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="FluentAssertions" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="Testcontainers.LocalStack" />
+    <PackageReference Include="Testcontainers.Kafka" />
+    <PackageReference Include="AWSSDK.S3" />
+    <PackageReference Include="AWSSDK.DynamoDBv2" />
+    <PackageReference Include="Confluent.Kafka" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\Shared\RentifyxAiServices.Shared\RentifyxAiServices.Shared.csproj" />
+    <ProjectReference Include="..\..\src\Functions\Moderation\RentifyxAiServices.Moderation\RentifyxAiServices.Moderation.csproj" />
   </ItemGroup>
 
 </Project>
