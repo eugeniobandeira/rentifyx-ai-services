@@ -17,7 +17,7 @@ The repository follows the same high-level pattern used by the neighboring Renti
 - `tests/RentifyxAiServices.Moderation.Tests/` — 24 unit tests covering every Moderation component.
 - `tests/RentifyxAiServices.Shared.Tests/` — 4 unit tests covering the idempotency store.
 - `tests/RentifyxAiServices.IntegrationTests/` — `ModerationPipelineTests.cs`, a LocalStack + Kafka (Testcontainers) end-to-end test; requires a running Docker daemon to execute.
-- `iac/modules/iam-roles/` — per-Lambda IAM roles; `moderation` policy covers Rekognition, S3 read, DynamoDB write, MSK publish, SQS send.
+- `iac/modules/iam-roles/` — per-Lambda IAM roles; `moderation` policy covers Rekognition, S3 read, DynamoDB write, SQS send. No Kafka IAM statement — the broker is self-hosted PLAINTEXT (`rentifyx-platform`'s `module.kafka`), reachable via VPC/security group, not IAM.
 - `iac/modules/review-queue/` — SQS review queue + DLQ + Rekognition-failure DLQ + CloudWatch depth alarm.
 - `iac/modules/{lambda-moderation,lambda-enrichment,s3-trigger,kafka-event-source-mapping}/` — not yet created; real infra wiring is a follow-on once `asset-registry-api`'s media bucket exists.
 - `docs/adr/` — ADR-AI-001 through ADR-AI-004 accepted.

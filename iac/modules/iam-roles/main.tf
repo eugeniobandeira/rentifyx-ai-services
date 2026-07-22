@@ -42,22 +42,16 @@ data "aws_iam_policy_document" "moderation" {
     resources = [var.moderation_idempotency_table_arn]
   }
 
-  statement {
-    sid    = "KafkaPublishVerdict"
-    effect = "Allow"
-
-    # MSK IAM auth actions do not support wildcard resources beyond cluster/topic ARNs.
-    actions = [
-      "kafka-cluster:Connect",
-      "kafka-cluster:DescribeTopic",
-      "kafka-cluster:WriteData",
-    ]
-
-    resources = [
-      var.moderation_kafka_cluster_arn,
-      var.moderation_kafka_topic_arn,
-    ]
-  }
+  # No Kafka IAM statement here: `rentifyx-platform`'s module.kafka is a self-hosted
+  # KRaft broker on EC2 (PLAINTEXT, port 9092) — MSK Serverless/IAM auth was evaluated
+  # and replaced (rentifyx-platform ADR-002/self-hosted-kafka), so `kafka-cluster:*`
+  # actions don't apply to this broker at all. Reachability is VPC/security-group based
+  # (rentifyx-platform's kafka SG allows any client inside `vpc_cidr`), which means this
+  # Lambda must be VPC-attached — a `lambda-moderation` Terraform concern (not yet built),
+  # not an IAM policy statement. The bootstrap address itself is read once via
+  # `terraform_remote_state` + `aws_ssm_parameter` at deploy time and injected as a Lambda
+  # environment variable, same pattern `rentifyx-identity-api`'s EC2 module already uses
+  # (`iac/terraform/main.tf` there) — no runtime `ssm:GetParameter` permission needed either.
 
   statement {
     sid    = "ReviewQueueAndDlqSend"

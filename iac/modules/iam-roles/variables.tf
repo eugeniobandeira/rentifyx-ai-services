@@ -13,16 +13,6 @@ variable "moderation_idempotency_table_arn" {
   type        = string
 }
 
-variable "moderation_kafka_cluster_arn" {
-  description = "ARN of the MSK cluster the moderation Lambda publishes verdict events to"
-  type        = string
-}
-
-variable "moderation_kafka_topic_arn" {
-  description = "ARN of the MSK topic the moderation Lambda publishes verdict events to"
-  type        = string
-}
-
 variable "moderation_review_queue_arn" {
   description = "ARN of the SQS queue moderation enqueues PendingReview items to (iac/modules/review-queue output)"
   type        = string

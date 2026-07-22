@@ -36,14 +36,19 @@ Event-driven AI service for RentifyX: three independent AWS Lambda functions, ea
 - `src/Functions/Enrichment` — consumes asset events, invokes Bedrock (`InvokeModel`) through a structured prompt flow. Still placeholder — not yet implemented (E-03/E-04).
 - `src/Functions/Dedupe` — deferred Phase 2 scaffold (DEF-AI-001); role is pre-scoped in Terraform (`rekognition:CompareFaces`) but no implementation yet.
 - `src/Shared` — event contract layer (`Events/`: `Verdict`, `ModerationLabel`, `AssetMediaModerated`, `AssetPendingManualReview`), AWS abstractions, `Idempotency/DynamoDbIdempotencyStore`, `Kafka/KafkaEventPublisher<T>` (generic — reused by Moderation, intended for Enrichment too). Shared contracts must stay versioned and additive-only.
-- `iac/modules/iam-roles` — one dedicated IAM role + policy per Lambda, zero permission overlap between functions (ADR-AI-002). Moderation's policy covers Rekognition, S3 read, DynamoDB PutItem, MSK IAM-auth publish, SQS SendMessage.
+- `iac/modules/iam-roles` — one dedicated IAM role + policy per Lambda, zero permission overlap between functions (ADR-AI-002). Moderation's policy covers Rekognition, S3 read, DynamoDB PutItem, SQS SendMessage.
 - `iac/modules/review-queue` — SQS manual-review queue + its DLQ, a separate Rekognition-failure DLQ, and a CloudWatch alarm on review-queue depth (MOD-04).
 
 The service is **event-only** — it never exposes synchronous HTTP endpoints. No synchronous coupling should leak in.
 
 Internal integration: `asset-registry-api` publishes `AssetCreated`; this service consumes it and publishes `AssetMediaModerated` / `AssetEnrichmentSuggested` back.
 
-External dependencies: S3, Rekognition, Bedrock Runtime, Amazon MSK/Kafka, DynamoDB (idempotency), OpenTelemetry.
+External dependencies: S3, Rekognition, Bedrock Runtime, Kafka (self-hosted EC2/KRaft, PLAINTEXT, provisioned by the sibling `rentifyx-platform` repo — not Amazon MSK; bootstrap address comes from `terraform_remote_state` + SSM, injected as a Lambda env var at deploy time, no runtime IAM Kafka permission), DynamoDB (idempotency), OpenTelemetry.
+
+### Cross-repo infra
+
+- `rentifyx-platform` (sibling repo, `C:\Users\Eugenio\Projects\study\rentifyx-platform` locally) owns the shared VPC and the self-hosted Kafka broker — this repo's Lambdas must be VPC-attached to reach it, and read the bootstrap address via that repo's `terraform_remote_state` output (`kafka_ssm_parameter_path`), same pattern as `rentifyx-identity-api`'s `iac/terraform/main.tf`. Not yet wired here — `iac/modules/lambda-moderation` (unbuilt) is where that VPC config and remote-state read belongs.
+- `rentifyx-asset-registry-api` (sibling repo) is the consumer of this repo's `AssetMediaModerated` Kafka event — see `docs/decisions/ADR-AI-003/004` here and its own `ADR-AR-008` for the cross-repo contract, and `.specs/project/STATE.md` there for its `G-001` (S3 key convention still unconfirmed) tracking.
 
 ### Deploy and runtime model (ADR-AI-001)
 

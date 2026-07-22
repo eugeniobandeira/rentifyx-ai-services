@@ -5,7 +5,7 @@
 - AWS S3
 - AWS Rekognition
 - AWS Bedrock Runtime
-- Amazon MSK/Kafka
+- Kafka — self-hosted (EC2, KRaft, PLAINTEXT), provisioned by the sibling `rentifyx-platform` repo's `module.kafka`, not Amazon MSK. MSK Serverless was evaluated there and replaced (`rentifyx-platform` ADR-002, `.specs/features/self-hosted-kafka/`). Bootstrap address resolved via `terraform_remote_state` + SSM parameter at deploy time (same pattern `rentifyx-identity-api` uses), not an IAM `kafka-cluster:*` permission — reachability is VPC/security-group based (broker SG allows any client inside the shared VPC's CIDR on port 9092).
 - DynamoDB for idempotency
 - OpenTelemetry-backed observability
 

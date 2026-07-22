@@ -3,6 +3,8 @@
 **Spec**: `.specs/features/e02-moderation-pipeline/spec.md`
 **Status**: Draft
 
+**Correction (2026-07-22, post-implementation):** every mention of "MSK"/"MSK IAM auth" below was wrong. The `rentifyx-platform` sibling repo — not visible at design time — provisions a **self-hosted Kafka broker** (EC2, KRaft, PLAINTEXT, port 9092), not Amazon MSK; MSK Serverless was evaluated there and explicitly replaced (`rentifyx-platform` ADR-002). The `kafka-cluster:*` IAM statement this design specified was removed from `iac/modules/iam-roles/main.tf` — reachability is VPC/security-group based, and the bootstrap address is read via `terraform_remote_state` + SSM at deploy time (same pattern `rentifyx-identity-api` already uses), not a runtime IAM permission. Left the rest of this document as-is as a historical record of what was actually decided/built; see `CLAUDE.md`'s "Cross-repo infra" section for the corrected picture.
+
 ---
 
 ## Cross-Repo Verification (2026-07-22)
