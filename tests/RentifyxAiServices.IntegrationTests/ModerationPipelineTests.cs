@@ -5,6 +5,7 @@ using Amazon.S3;
 using Amazon.S3.Model;
 using Amazon.SQS;
 using Confluent.Kafka;
+using Confluent.Kafka.Admin;
 using DotNet.Testcontainers.Builders;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
@@ -28,6 +29,7 @@ public sealed class ModerationPipelineTests : IAsyncLifetime
     private const string Bucket = "media-bucket";
     private const string Table = "moderation-idempotency";
     private const string ModeratedTopic = "asset-media-moderated";
+    private const string PendingReviewTopic = "asset-pending-manual-review";
     private const string Key = "assets/11111111-1111-1111-1111-111111111111/22222222-2222-2222-2222-222222222222/photo.jpg";
     private static readonly Guid AssetId = Guid.Parse("22222222-2222-2222-2222-222222222222");
 
@@ -43,11 +45,10 @@ public sealed class ModerationPipelineTests : IAsyncLifetime
     {
         await Task.WhenAll(_localStack.StartAsync(), _kafka.StartAsync());
 
-        Amazon.RegionEndpoint region = Amazon.RegionEndpoint.USEast1;
         Amazon.Runtime.BasicAWSCredentials credentials = new("test", "test");
 
-        _s3 = new AmazonS3Client(credentials, new AmazonS3Config { ServiceURL = _localStack.GetConnectionString(), ForcePathStyle = true, RegionEndpoint = region });
-        _dynamoDb = new AmazonDynamoDBClient(credentials, new AmazonDynamoDBConfig { ServiceURL = _localStack.GetConnectionString(), RegionEndpoint = region });
+        _s3 = new AmazonS3Client(credentials, new AmazonS3Config { ServiceURL = _localStack.GetConnectionString(), ForcePathStyle = true, AuthenticationRegion = "us-east-1" });
+        _dynamoDb = new AmazonDynamoDBClient(credentials, new AmazonDynamoDBConfig { ServiceURL = _localStack.GetConnectionString(), AuthenticationRegion = "us-east-1" });
 
         await _s3.PutBucketAsync(Bucket);
         await _dynamoDb.CreateTableAsync(new CreateTableRequest
@@ -59,6 +60,13 @@ public sealed class ModerationPipelineTests : IAsyncLifetime
         });
 
         _producer = new ProducerBuilder<string, string>(new ProducerConfig { BootstrapServers = _kafka.GetBootstrapAddress() }).Build();
+
+        using IAdminClient adminClient = new AdminClientBuilder(new AdminClientConfig { BootstrapServers = _kafka.GetBootstrapAddress() }).Build();
+        await adminClient.CreateTopicsAsync(
+        [
+            new TopicSpecification { Name = ModeratedTopic, NumPartitions = 1, ReplicationFactor = 1 },
+            new TopicSpecification { Name = PendingReviewTopic, NumPartitions = 1, ReplicationFactor = 1 }
+        ]).ConfigureAwait(false);
     }
 
     public async Task DisposeAsync()
@@ -75,7 +83,7 @@ public sealed class ModerationPipelineTests : IAsyncLifetime
             new ThresholdEvaluator(),
             new KafkaModerationEventPublisher(
                 new KafkaEventPublisher<AssetMediaModerated>(_producer, ModeratedTopic),
-                new KafkaEventPublisher<AssetPendingManualReview>(_producer, "asset-pending-manual-review"),
+                new KafkaEventPublisher<AssetPendingManualReview>(_producer, PendingReviewTopic),
                 Mock.Of<IAmazonSQS>(),
                 "unused-review-queue"),
             Mock.Of<IAmazonSQS>(),
