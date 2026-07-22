@@ -1,4 +1,4 @@
-﻿namespace RentifyxAiServices.SharedLibrary;
+﻿namespace RentifyxAiServices.Shared;
 
 public static class SharedBootstrap
 {

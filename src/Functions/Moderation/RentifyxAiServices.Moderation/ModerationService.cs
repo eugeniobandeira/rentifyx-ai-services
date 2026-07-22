@@ -1,9 +1,7 @@
-using Amazon.Lambda.S3Events;
+﻿using Amazon.Lambda.S3Events;
 using Amazon.SQS;
 using Amazon.SQS.Model;
 using Microsoft.Extensions.Logging;
-using RentifyxAiServices.SharedLibrary.Events;
-using RentifyxAiServices.SharedLibrary.Idempotency;
 
 namespace RentifyxAiServices.Moderation;
 

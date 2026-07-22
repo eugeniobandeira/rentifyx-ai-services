@@ -1,4 +1,4 @@
-namespace RentifyxAiServices.SharedLibrary.Events;
+﻿namespace RentifyxAiServices.Shared.Events;
 
 public enum Verdict
 {

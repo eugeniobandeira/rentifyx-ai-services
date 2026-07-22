@@ -1,6 +1,4 @@
-using RentifyxAiServices.SharedLibrary.Events;
-
-namespace RentifyxAiServices.Moderation;
+﻿namespace RentifyxAiServices.Moderation.Publishing;
 
 public interface IModerationEventPublisher
 {

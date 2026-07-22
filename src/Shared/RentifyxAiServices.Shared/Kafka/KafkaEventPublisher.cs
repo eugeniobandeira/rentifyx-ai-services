@@ -1,8 +1,8 @@
+﻿using Confluent.Kafka;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using Confluent.Kafka;
 
-namespace RentifyxAiServices.SharedLibrary.Kafka;
+namespace RentifyxAiServices.Shared.Kafka;
 
 public sealed class KafkaEventPublisher<TEvent>(IProducer<string, string> producer, string topic) : IEventPublisher<TEvent>
 {

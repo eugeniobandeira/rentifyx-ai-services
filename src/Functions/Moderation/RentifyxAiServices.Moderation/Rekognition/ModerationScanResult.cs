@@ -1,6 +1,4 @@
-using RentifyxAiServices.SharedLibrary.Events;
-
-namespace RentifyxAiServices.Moderation;
+﻿namespace RentifyxAiServices.Moderation.Rekognition;
 
 public sealed record ModerationScanResult(
     IReadOnlyList<ModerationLabel> Labels,

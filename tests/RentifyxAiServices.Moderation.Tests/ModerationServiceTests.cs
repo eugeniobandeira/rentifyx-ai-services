@@ -1,12 +1,8 @@
-using Amazon.Lambda.S3Events;
+﻿using Amazon.Lambda.S3Events;
 using Amazon.SQS;
 using Amazon.SQS.Model;
-using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using RentifyxAiServices.Moderation;
-using RentifyxAiServices.SharedLibrary.Events;
-using RentifyxAiServices.SharedLibrary.Idempotency;
 using Xunit;
 
 namespace RentifyxAiServices.Moderation.Tests;

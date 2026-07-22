@@ -1,3 +1,3 @@
-namespace RentifyxAiServices.SharedLibrary.Events;
+﻿namespace RentifyxAiServices.Shared.Events;
 
 public sealed record ModerationLabel(string Name, float Confidence);

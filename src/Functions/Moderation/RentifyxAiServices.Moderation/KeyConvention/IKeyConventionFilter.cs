@@ -1,4 +1,4 @@
-namespace RentifyxAiServices.Moderation;
+﻿namespace RentifyxAiServices.Moderation.KeyConvention;
 
 public interface IKeyConventionFilter
 {

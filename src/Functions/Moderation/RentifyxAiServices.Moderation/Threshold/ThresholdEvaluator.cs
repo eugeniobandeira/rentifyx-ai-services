@@ -1,6 +1,4 @@
-using RentifyxAiServices.SharedLibrary.Events;
-
-namespace RentifyxAiServices.Moderation;
+﻿namespace RentifyxAiServices.Moderation.Threshold;
 
 /// <summary>Boundaries per ADR-AI-003: &gt;=90% Rejected, [60,90) PendingReview, &lt;60% Approved.</summary>
 public sealed class ThresholdEvaluator : IThresholdEvaluator

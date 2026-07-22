@@ -1,9 +1,9 @@
-using Amazon.Rekognition;
+﻿using Amazon.Rekognition;
 using Amazon.Rekognition.Model;
 using Microsoft.Extensions.Logging;
 using SharedModerationLabel = RentifyxAiServices.SharedLibrary.Events.ModerationLabel;
 
-namespace RentifyxAiServices.Moderation;
+namespace RentifyxAiServices.Moderation.Rekognition;
 
 public sealed class RekognitionModerationClient(
     IAmazonRekognition rekognitionClient,

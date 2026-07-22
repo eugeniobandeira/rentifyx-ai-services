@@ -1,5 +1,4 @@
-using FluentAssertions;
-using RentifyxAiServices.Moderation;
+﻿using FluentAssertions;
 using Xunit;
 
 namespace RentifyxAiServices.Moderation.Tests;

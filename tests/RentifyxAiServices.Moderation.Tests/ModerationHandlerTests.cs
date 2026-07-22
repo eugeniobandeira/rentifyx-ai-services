@@ -1,8 +1,7 @@
-using Amazon.Lambda.S3Events;
+﻿using Amazon.Lambda.S3Events;
 using Amazon.Lambda.TestUtilities;
 using FluentAssertions;
 using Moq;
-using RentifyxAiServices.Moderation;
 using Xunit;
 
 namespace RentifyxAiServices.Moderation.Tests;

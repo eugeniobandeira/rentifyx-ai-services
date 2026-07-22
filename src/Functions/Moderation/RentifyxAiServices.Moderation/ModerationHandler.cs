@@ -1,13 +1,10 @@
-using Amazon.DynamoDBv2;
+﻿using Amazon.DynamoDBv2;
 using Amazon.Lambda.Core;
 using Amazon.Lambda.S3Events;
 using Amazon.Rekognition;
 using Amazon.SQS;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging.Abstractions;
-using RentifyxAiServices.SharedLibrary.Events;
-using RentifyxAiServices.SharedLibrary.Idempotency;
-using RentifyxAiServices.SharedLibrary.Kafka;
 
 namespace RentifyxAiServices.Moderation;
 

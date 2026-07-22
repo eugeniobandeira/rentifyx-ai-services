@@ -1,10 +1,8 @@
-using System.Text.Json;
-using Amazon.SQS;
+﻿using Amazon.SQS;
 using Amazon.SQS.Model;
-using RentifyxAiServices.SharedLibrary.Events;
-using RentifyxAiServices.SharedLibrary.Kafka;
+using System.Text.Json;
 
-namespace RentifyxAiServices.Moderation;
+namespace RentifyxAiServices.Moderation.Publishing;
 
 public sealed class KafkaModerationEventPublisher(
     IEventPublisher<AssetMediaModerated> moderatedPublisher,

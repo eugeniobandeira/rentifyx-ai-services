@@ -1,10 +1,6 @@
-using Amazon.SQS;
+﻿using Amazon.SQS;
 using Amazon.SQS.Model;
-using FluentAssertions;
 using Moq;
-using RentifyxAiServices.Moderation;
-using RentifyxAiServices.SharedLibrary.Events;
-using RentifyxAiServices.SharedLibrary.Kafka;
 using Xunit;
 
 namespace RentifyxAiServices.Moderation.Tests;

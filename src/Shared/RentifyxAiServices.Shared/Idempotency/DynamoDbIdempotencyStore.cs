@@ -1,7 +1,7 @@
-using Amazon.DynamoDBv2;
+﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 
-namespace RentifyxAiServices.SharedLibrary.Idempotency;
+namespace RentifyxAiServices.Shared.Idempotency;
 
 public sealed class DynamoDbIdempotencyStore(IAmazonDynamoDB dynamoDb, string tableName) : IIdempotencyStore
 {

@@ -1,4 +1,4 @@
-namespace RentifyxAiServices.SharedLibrary.Kafka;
+﻿namespace RentifyxAiServices.Shared.Kafka;
 
 public interface IEventPublisher<in TEvent>
 {

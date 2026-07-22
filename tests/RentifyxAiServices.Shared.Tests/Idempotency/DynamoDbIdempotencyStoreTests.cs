@@ -1,8 +1,7 @@
-using Amazon.DynamoDBv2;
+﻿using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
 using FluentAssertions;
 using Moq;
-using RentifyxAiServices.SharedLibrary.Idempotency;
 using Xunit;
 
 namespace RentifyxAiServices.Shared.Tests.Idempotency;

@@ -1,9 +1,8 @@
-using Amazon.Rekognition;
+﻿using Amazon.Rekognition;
 using Amazon.Rekognition.Model;
 using FluentAssertions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Moq;
-using RentifyxAiServices.Moderation;
 using Xunit;
 
 namespace RentifyxAiServices.Moderation.Tests;

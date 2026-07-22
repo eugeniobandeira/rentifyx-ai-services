@@ -1,4 +1,4 @@
-namespace RentifyxAiServices.Moderation;
+﻿namespace RentifyxAiServices.Moderation.Rekognition;
 
 public interface IRekognitionModerationClient
 {
