@@ -95,9 +95,9 @@ Verified directly against `rentifyx-asset-registry-api` source before writing th
 
 | Requirement ID | Story | Phase | Status |
 |---|---|---|---|
-| MOD-01 | P1: S3-triggered scan | Done | T5, T9, T10 (unit-verified); T11 e2e code-complete, unverified — no Docker in this environment |
+| MOD-01 | P1: S3-triggered scan | Done | T5, T9, T10 (unit-verified); T11 e2e verified against real Docker 2026-07-22 |
 | MOD-02 | P1: Confidence-based verdict | Done | T4 (unit-verified, exact boundary cases) |
-| MOD-03 | P1: Verdict published as event | Done | T1, T8, T9 (unit-verified); T11 e2e code-complete, unverified |
+| MOD-03 | P1: Verdict published as event | Done | T1, T8, T9 (unit-verified); T11 e2e verified against real Docker 2026-07-22 |
 | MOD-04 | P1: Manual review queue + alarm | Done | T7 (terraform fmt-verified), T6 |
 
 **Coverage:** 4 total, 4 mapped to tasks, 0 unmapped

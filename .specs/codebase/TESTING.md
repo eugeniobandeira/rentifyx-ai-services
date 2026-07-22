@@ -17,7 +17,7 @@
 
 - `RentifyxAiServices.Shared.Tests` — 4 tests (idempotency store: first-seen, duplicate-key, null-key validation, placeholder).
 - `RentifyxAiServices.Moderation.Tests` — 24 tests (Rekognition client retry/failure paths, threshold boundaries, key convention filter, event publisher routing, orchestrator branch coverage, handler malformed-event handling).
-- `RentifyxAiServices.IntegrationTests` — `ModerationPipelineTests` (3 tests: clean-image approve, duplicate-ETag skip, violating-image reject) plus a placeholder. **Requires a running Docker daemon** (Testcontainers.LocalStack + Testcontainers.Kafka) — compiles clean but has not been verified green in every environment; confirm with a real Docker-available run before trusting this gate.
+- `RentifyxAiServices.IntegrationTests` — `ModerationPipelineTests` (3 tests: clean-image approve, duplicate-ETag skip, violating-image reject) plus a placeholder. Verified green 2026-07-22 against a real Docker daemon (Testcontainers.LocalStack + Testcontainers.Kafka) — requires Docker to run.
 
 ## Known gap
 

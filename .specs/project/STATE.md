@@ -30,14 +30,13 @@
   - Several NuGet package pins in `Directory.Packages.props` were stale (removed from NuGet.org) and had to be bumped to real current versions during implementation: `AWSSDK.Rekognition` 4.0.14.0→4.0.100.5, `Amazon.Lambda.Core` 2.7.0→3.1.1, `Amazon.Lambda.S3Events` 2.2.0→4.0.0, `Amazon.Lambda.Serialization.SystemTextJson` 2.6.0→3.0.0, `Amazon.Lambda.TestUtilities` 2.3.0→3.0.0. New pins added: `AWSSDK.SQS`, `AWSSDK.S3`. All versions confirmed against the live NuGet.org flat-container API before pinning, not guessed.
   - `Amazon.Lambda.S3Events` 4.0.0 flattened its old nested `S3EventNotification` wrapper class — the real type is `Amazon.Lambda.S3Events.S3Event.S3EventNotificationRecord` (nested under `S3Event`), confirmed via the package's XML doc comments, not the (misleading) older API shape assumed in the original task breakdown.
   - Gate check: `dotnet test` across Shared.Tests (4), Moderation.Tests (24), Enrichment.Tests (1), IntegrationTests (1 placeholder) → 30/30 pass. Full solution `dotnet build --configuration Release` clean, 0 warnings/errors.
-  - **Blocker**: `tests/RentifyxAiServices.IntegrationTests/ModerationPipelineTests.cs` (LocalStack S3/DynamoDB + real Kafka via Testcontainers) compiles clean but has never run green — this sandbox has no running Docker daemon (`DockerUnavailableException`). Needs a real run with Docker available to verify.
+  - `tests/RentifyxAiServices.IntegrationTests/ModerationPipelineTests.cs` (LocalStack S3/DynamoDB + real Kafka via Testcontainers) verified 2026-07-22 with Docker running → 3/3 pass. Fixed three real bugs surfaced only by a live run: `KafkaEventPublisher<T>` was serializing `Verdict` as its numeric ordinal instead of its name (added `JsonStringEnumConverter` — cross-repo Kafka consumers would otherwise have had to hardcode enum ordinals); the test's S3/DynamoDB clients had both `ServiceURL` and `RegionEndpoint` set, which routed requests to real AWS instead of LocalStack (fixed via `AuthenticationRegion`); Kafka consumers subscribed before the topic existed (fixed by pre-creating topics via `AdminClient`).
 
 ## Open Items
 
 - Confirm the final .NET 10 SDK pin to use in CI and local development.
 - Align the eventual Lambda packaging and Terraform deployment strategy for production.
 - `terraform validate` for `iac/modules/iam-roles` and `iac/modules/review-queue` still needs to run in an environment with registry access — only `fmt -check` was verified here.
-- `tests/RentifyxAiServices.IntegrationTests/ModerationPipelineTests.cs` needs to actually run against a live Docker daemon before E-02 can be called fully verified — see blocker above.
 - S3 key convention (`assets/{ownerId}/{assetId}/{filename}`) still needs confirmation from the `asset-registry-api` team before `iac/modules/s3-trigger` (still unbuilt) is wired to a real bucket — re-verified still true as of E-02's design pass, no code in that repo confirms or denies it.
 - ADR-AI-005 through 007 still not written — tied to E-03/E-04, written when those land.
 - `iac/modules/{lambda-moderation,lambda-enrichment,s3-trigger,kafka-event-source-mapping}` still empty — scoped to E-02 real-bucket wiring/E-03.

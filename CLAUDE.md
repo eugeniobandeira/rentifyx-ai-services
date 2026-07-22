@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Solution builds and CI is green. `Moderation` has a real, tested handler stack (E-02, shipped 2026-07-22) — Enrichment and Dedupe are still placeholder `Class1.cs` files. Check `.specs/project/STATE.md` and `.specs/project/ROADMAP.md` for what's actually been implemented before assuming a component exists.
 
-One open verification gap: `tests/RentifyxAiServices.IntegrationTests/ModerationPipelineTests.cs` (LocalStack + Kafka via Testcontainers) compiles clean but has not been run green in every environment — it needs a running Docker daemon.
+`tests/RentifyxAiServices.IntegrationTests/ModerationPipelineTests.cs` (LocalStack + Kafka via Testcontainers) is verified green — requires a running Docker daemon to execute.
 
 ## Commands
 
