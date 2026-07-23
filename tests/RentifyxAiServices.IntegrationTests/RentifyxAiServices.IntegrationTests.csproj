@@ -31,6 +31,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\Shared\RentifyxAiServices.Shared\RentifyxAiServices.Shared.csproj" />
     <ProjectReference Include="..\..\src\Functions\Moderation\RentifyxAiServices.Moderation\RentifyxAiServices.Moderation.csproj" />
+    <ProjectReference Include="..\..\src\Functions\Enrichment\RentifyxAiServices.Enrichment\RentifyxAiServices.Enrichment.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +42,8 @@
     <Using Include="RentifyxAiServices.Moderation.Rekognition" />
     <Using Include="RentifyxAiServices.Moderation.Threshold" />
     <Using Include="RentifyxAiServices.Moderation.Publishing" />
+    <Using Include="RentifyxAiServices.Enrichment.Bedrock" />
+    <Using Include="RentifyxAiServices.Enrichment.Publishing" />
   </ItemGroup>
 
 </Project>
