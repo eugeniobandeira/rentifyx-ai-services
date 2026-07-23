@@ -6,7 +6,7 @@
 - [x] Solution and initial projects created and build-verified
 - [x] E-01 closed: test scaffold, CI (test-pass gate), least-privilege IAM Terraform module, ADR-AI-001/002
 - [x] E-02 closed: Moderation pipeline with Rekognition, ADR-AI-003/004 (LocalStack/Kafka integration test verified against real Docker 2026-07-22)
-- [ ] Event contracts and integration baseline — `iac/modules/lambda-moderation` done (2026-07-23: Lambda function, VPC attachment, Kafka SSM lookup, S3/SQS/DynamoDB env wiring); still open pending `iac/modules/s3-trigger` (S3 ObjectCreated notification + `aws_lambda_permission`) and a real DynamoDB idempotency table module
+- [x] Event contracts and integration baseline (`iac/terraform/` root config composes `iam-roles`/`review-queue`/`lambda-moderation`/`s3-trigger`, `terraform validate` clean; real `apply` still blocked on media bucket, deployment package, and idempotency table not existing yet)
 
 ## Phase 2
 
