@@ -17,3 +17,8 @@ output "moderation_failure_dlq_arn" {
   description = "ARN of the DLQ for Rekognition invocations that fail after retries are exhausted"
   value       = aws_sqs_queue.moderation_failure_dlq.arn
 }
+
+output "moderation_failure_dlq_url" {
+  description = "URL of the DLQ for Rekognition invocations that fail after retries are exhausted (needed by iac/modules/lambda-moderation to inject FAILURE_DLQ_URL - sqs:SendMessage needs a queue URL, not just an ARN)"
+  value       = aws_sqs_queue.moderation_failure_dlq.url
+}
