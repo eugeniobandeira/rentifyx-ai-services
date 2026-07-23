@@ -10,7 +10,7 @@
 
 ## Phase 2
 
-- [ ] Enrichment pipeline with Bedrock
+- [x] Enrichment pipeline with Bedrock (E-03 closed: Converse API, Kafka-triggered via `Amazon.Lambda.KafkaEvents`, idempotent, cost/safety guardrails — ADR-AI-005/006 still to be written. LocalStack/Kafka integration test verified against real Docker 2026-07-23. Terraform wiring not yet done, tracked as follow-up.)
 - [ ] Manual review and observability hardening
 - [ ] Production readiness and release gate
 

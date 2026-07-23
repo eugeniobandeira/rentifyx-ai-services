@@ -1,7 +1,7 @@
 # E-03 Enrichment Pipeline Tasks
 
 **Design**: `.specs/features/e03-enrichment-pipeline/design.md`
-**Status**: Approved
+**Status**: Done — all 10 tasks verified green (T10 verified 2026-07-23 with Docker running)
 
 **Scope note**: this breakdown covers the C# implementation only (Lambda + Shared contract change). Terraform (`iac/modules/kafka-event-source-mapping`, `iac/modules/lambda-enrichment`, a new enrichment idempotency table module, a new enrichment failure-DLQ module, and extending `iac/modules/iam-roles`' enrichment policy with S3/DynamoDB/SQS/Bedrock permissions) is deliberately out of this tasks.md — same posture as E-02, where the Lambda code shipped before its Terraform wiring did, in a separate pass. Tracked as a follow-up once T1–T10 land.
 
