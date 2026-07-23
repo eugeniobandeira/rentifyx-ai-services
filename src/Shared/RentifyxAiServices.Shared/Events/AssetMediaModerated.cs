@@ -6,4 +6,6 @@ public sealed record AssetMediaModerated(
     IReadOnlyList<ModerationLabel> Labels,
     float TopConfidence,
     DateTimeOffset Timestamp,
-    int SchemaVersion = 1);
+    string Bucket,
+    string Key,
+    int SchemaVersion = 2);

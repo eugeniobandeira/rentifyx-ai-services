@@ -17,7 +17,7 @@ public class KafkaModerationEventPublisherTests
     [Fact]
     public async Task PublishAsync_AssetMediaModerated_PublishesToKafkaOnly()
     {
-        AssetMediaModerated @event = new(Guid.NewGuid(), Verdict.Approved, [], 10f, DateTimeOffset.UtcNow);
+        AssetMediaModerated @event = new(Guid.NewGuid(), Verdict.Approved, [], 10f, DateTimeOffset.UtcNow, "test-bucket", "test-key");
 
         await CreatePublisher().PublishAsync(@event);
 

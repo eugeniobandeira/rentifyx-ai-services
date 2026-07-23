@@ -56,7 +56,7 @@ public sealed class ModerationService(
             return;
         }
 
-        AssetMediaModerated moderatedEvent = new(assetId, verdict, scanResult.Labels, topConfidence, timestamp);
+        AssetMediaModerated moderatedEvent = new(assetId, verdict, scanResult.Labels, topConfidence, timestamp, bucket, key);
         await eventPublisher.PublishAsync(moderatedEvent, cancellationToken).ConfigureAwait(false);
     }
 
