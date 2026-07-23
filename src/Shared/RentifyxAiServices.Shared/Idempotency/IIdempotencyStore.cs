@@ -1,4 +1,4 @@
-﻿namespace RentifyxAiServices.Shared.Idempotency;
+﻿namespace RentifyxAiServices.SharedKernel.Idempotency;
 
 public interface IIdempotencyStore
 {

@@ -1,4 +1,4 @@
-﻿namespace RentifyxAiServices.Shared.Events;
+﻿namespace RentifyxAiServices.SharedKernel.Events;
 
 public sealed record AssetPendingManualReview(
     Guid AssetId,

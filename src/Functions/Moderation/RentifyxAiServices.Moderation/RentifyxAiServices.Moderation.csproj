@@ -25,4 +25,14 @@
     <ProjectReference Include="..\..\..\Shared\RentifyxAiServices.Shared\RentifyxAiServices.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="RentifyxAiServices.SharedKernel.Events" />
+    <Using Include="RentifyxAiServices.SharedKernel.Idempotency" />
+    <Using Include="RentifyxAiServices.SharedKernel.Kafka" />
+    <Using Include="RentifyxAiServices.Moderation.KeyConvention" />
+    <Using Include="RentifyxAiServices.Moderation.Rekognition" />
+    <Using Include="RentifyxAiServices.Moderation.Threshold" />
+    <Using Include="RentifyxAiServices.Moderation.Publishing" />
+  </ItemGroup>
+
 </Project>

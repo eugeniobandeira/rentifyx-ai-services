@@ -27,4 +27,8 @@
     <ProjectReference Include="..\..\src\Shared\RentifyxAiServices.Shared\RentifyxAiServices.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Using Include="RentifyxAiServices.SharedKernel.Idempotency" />
+  </ItemGroup>
+
 </Project>

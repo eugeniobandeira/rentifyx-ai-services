@@ -1,6 +1,6 @@
-﻿namespace RentifyxAiServices.Shared;
+﻿namespace RentifyxAiServices.SharedKernel;
 
 public static class SharedBootstrap
 {
-    public const string ProjectName = "RentifyxAiServices.Shared";
+    public const string ProjectName = "RentifyxAiServices.SharedKernel";
 }

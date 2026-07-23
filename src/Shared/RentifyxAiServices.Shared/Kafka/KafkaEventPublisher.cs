@@ -2,7 +2,7 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace RentifyxAiServices.Shared.Kafka;
+namespace RentifyxAiServices.SharedKernel.Kafka;
 
 public sealed class KafkaEventPublisher<TEvent>(IProducer<string, string> producer, string topic) : IEventPublisher<TEvent>
 {

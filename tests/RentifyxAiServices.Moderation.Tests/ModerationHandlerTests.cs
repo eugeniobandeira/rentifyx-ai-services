@@ -38,7 +38,7 @@ public class ModerationHandlerTests
 
         return new ModerationService(
             keyFilter.Object,
-            Mock.Of<RentifyxAiServices.SharedLibrary.Idempotency.IIdempotencyStore>(),
+            Mock.Of<IIdempotencyStore>(),
             Mock.Of<IRekognitionModerationClient>(),
             Mock.Of<IThresholdEvaluator>(),
             Mock.Of<IModerationEventPublisher>(),
