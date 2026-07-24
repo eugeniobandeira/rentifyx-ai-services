@@ -25,6 +25,9 @@ artifacts/
 *.exe
 *.pdb
 
+# Lambda deployment packages (built via `dotnet lambda package`)
+*.zip
+
 # ASP.NET
 wwwroot/
 

@@ -43,3 +43,42 @@ jobs:
         with:
           name: test-results
           path: ./TestResults/*.trx
+
+  package:
+    needs: build-test
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - function: Moderation
+            project: src/Functions/Moderation/RentifyxAiServices.Moderation
+          - function: Enrichment
+            project: src/Functions/Enrichment/RentifyxAiServices.Enrichment
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+
+      - name: Restore dotnet tools
+        run: dotnet tool restore
+
+      - name: Package ${{ matrix.function }} Lambda
+        run: >
+          dotnet lambda package
+          --project-location ${{ matrix.project }}
+          --configuration Release
+          --framework net10.0
+          --output-package ${{ matrix.project }}/${{ matrix.function }}.zip
+
+      - name: Upload ${{ matrix.function }} package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.function }}-lambda-package
+          path: ${{ matrix.project }}/${{ matrix.function }}.zip

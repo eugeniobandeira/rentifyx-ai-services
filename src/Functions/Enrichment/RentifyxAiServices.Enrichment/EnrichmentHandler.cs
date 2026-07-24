@@ -8,6 +8,11 @@ using Confluent.Kafka;
 using Microsoft.Extensions.Logging.Abstractions;
 using RentifyxAiServices.SharedKernel.Events;
 
+// Required for the Lambda runtime to deserialize KafkaEvent off the wire -
+// same LambdaValidationException bug found and fixed in ModerationHandler
+// against a real S3 upload, 2026-07-24.
+[assembly: LambdaSerializer(typeof(DefaultLambdaJsonSerializer))]
+
 namespace RentifyxAiServices.Enrichment;
 
 public sealed class EnrichmentHandler

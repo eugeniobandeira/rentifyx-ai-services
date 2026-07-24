@@ -4,7 +4,12 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = "~> 5.0"
+      # Bumped from ~> 5.0 (2026-07-24): v5.100.0's schema predates AWS
+      # Lambda's dotnet10 managed runtime (added by AWS 2026-01-08,
+      # confirmed via aws.amazon.com/about-aws/whats-new/2026/01/aws-lambda-dot-net-10)
+      # and rejected it client-side as an invalid enum value. All child
+      # modules under iac/modules/ already resolve unconstrained to 6.56.0.
+      version = "~> 6.0"
     }
   }
 

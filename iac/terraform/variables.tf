@@ -18,21 +18,9 @@ variable "app_name" {
 
 # --- Asset media S3 bucket -------------------------------------------------
 #
-# No repo (this one, asset-registry-api, or platform) currently provisions
-# this bucket in Terraform - it doesn't exist yet anywhere. No default here
-# on purpose; the real values must be supplied once the bucket is created and
-# the S3 key convention is confirmed with asset-registry-api (gap G-001, see
-# .specs/project/STATE.md Open Items).
-
-variable "media_bucket_id" {
-  description = "ID (name) of the S3 bucket holding asset media - not yet provisioned anywhere, no default"
-  type        = string
-}
-
-variable "media_bucket_arn" {
-  description = "ARN of the S3 bucket holding asset media - not yet provisioned anywhere, no default"
-  type        = string
-}
+# Provisioned by iac/modules/media-bucket (E-03c) - domain-specific to this
+# repo, not rentifyx-platform's shared cross-domain infra. See main.tf's
+# module.media_bucket.
 
 variable "filter_prefix" {
   description = "S3 object key prefix filter for the moderation trigger - deliberately no default convention baked in (G-001 unconfirmed cross-repo). Leave empty for no prefix filter."
@@ -55,19 +43,9 @@ variable "lambda_package_path" {
 
 # --- Idempotency (DynamoDB) -------------------------------------------------
 #
-# No DynamoDB table resource/module exists anywhere in this repo's iac/ yet
-# (tracked in .specs/project/STATE.md Open Items) - name and ARN are taken as
-# plain inputs here rather than this config inventing a table schema.
-
-variable "idempotency_table_name" {
-  description = "Name of the DynamoDB table the moderation Lambda uses to skip re-processing the same S3 object/ETag - no table resource exists yet, see .specs/project/STATE.md Open Items"
-  type        = string
-}
-
-variable "idempotency_table_arn" {
-  description = "ARN of the same DynamoDB idempotency table, scoped into the moderation IAM policy - no table resource exists yet"
-  type        = string
-}
+# Provisioned by iac/modules/dynamodb-table (E-03c adopts the same generic
+# module E-03b built for Enrichment) - see main.tf's
+# module.moderation_idempotency_table.
 
 # --- Bedrock (Enrichment) ---------------------------------------------------
 #
@@ -76,8 +54,9 @@ variable "idempotency_table_arn" {
 # ARN is a decision that belongs to E-03's design, not this root config.
 
 variable "bedrock_model_arn" {
-  description = "ARN of the specific Bedrock model the enrichment Lambda is allowed to invoke - no default, decided when E-03 lands"
+  description = "ARN of the specific Bedrock model the enrichment Lambda is allowed to invoke. Confirmed real via `aws bedrock list-inference-profiles` against account 166613156216 (2026-07-24): the us.anthropic.claude-sonnet-5 cross-region inference profile only routes to us-east-1/us-east-2/us-west-2 - Claude Sonnet 5 has no sa-east-1 presence, so this stays us-east-1 even though every other resource in this config defaults to sa-east-1 (BEDROCK_REGION env var on lambda-enrichment matches)."
   type        = string
+  default     = "arn:aws:bedrock:us-east-1:166613156216:inference-profile/us.anthropic.claude-sonnet-5"
 }
 
 # --- Enrichment Lambda deployment (E-03b) -----------------------------------

@@ -17,19 +17,40 @@ provider "aws" {
   }
 }
 
+data "aws_caller_identity" "current" {}
+
+# Asset media bucket - domain-specific to this repo, not rentifyx-platform's
+# shared cross-domain infra (VPC/Kafka). Account ID suffix for S3's
+# globally-unique naming requirement, same convention as the
+# rentifyx-tfstate-<account-id> state bucket.
+module "media_bucket" {
+  source = "../modules/media-bucket"
+
+  bucket_name = "${local.prefix}-media-${data.aws_caller_identity.current.account_id}"
+}
+
 # One dedicated IAM role + policy per Lambda, zero permission overlap
 # (ADR-AI-002) - moderation, enrichment, dedupe.
 module "iam_roles" {
   source = "../modules/iam-roles"
 
   prefix                           = local.prefix
-  media_bucket_arn                 = var.media_bucket_arn
-  moderation_idempotency_table_arn = var.idempotency_table_arn
+  media_bucket_arn                 = module.media_bucket.bucket_arn
+  moderation_idempotency_table_arn = module.moderation_idempotency_table.table_arn
   moderation_review_queue_arn      = module.review_queue.review_queue_arn
   moderation_failure_dlq_arn       = module.review_queue.moderation_failure_dlq_arn
   bedrock_model_arn                = var.bedrock_model_arn
   enrichment_idempotency_table_arn = module.enrichment_idempotency_table.table_arn
   enrichment_failure_dlq_arn       = module.review_queue.enrichment_failure_dlq_arn
+}
+
+# Moderation's own idempotency table (E-03c) - adopts the same generic
+# dynamodb-table module Enrichment's table already uses (E-03b), closing the
+# gap where this was a plain unbacked variable.
+module "moderation_idempotency_table" {
+  source = "../modules/dynamodb-table"
+
+  table_name = "${local.prefix}-moderation-idempotency"
 }
 
 # Manual-review SQS queue + its DLQ, and the separate Rekognition-failure DLQ
@@ -49,7 +70,7 @@ module "lambda_moderation" {
   prefix                 = local.prefix
   moderation_role_arn    = module.iam_roles.moderation_role_arn
   lambda_package_path    = var.lambda_package_path
-  idempotency_table_name = var.idempotency_table_name
+  idempotency_table_name = module.moderation_idempotency_table.table_name
   review_queue_url       = module.review_queue.review_queue_url
   failure_dlq_url        = module.review_queue.moderation_failure_dlq_url
 }
@@ -61,8 +82,8 @@ module "s3_trigger" {
   source = "../modules/s3-trigger"
 
   prefix               = local.prefix
-  bucket_id            = var.media_bucket_id
-  bucket_arn           = var.media_bucket_arn
+  bucket_id            = module.media_bucket.bucket_id
+  bucket_arn           = module.media_bucket.bucket_arn
   lambda_function_arn  = module.lambda_moderation.function_arn
   lambda_function_name = module.lambda_moderation.function_name
   filter_prefix        = var.filter_prefix
@@ -70,8 +91,7 @@ module "s3_trigger" {
 }
 
 # Enrichment's own idempotency table (E-03b) - generic single-partition-key
-# module, reusable by Moderation's still-unbacked idempotency table later
-# (out of scope here, see .specs/features/e03b-enrichment-iac/spec.md).
+# module, also adopted by Moderation's table above (E-03c).
 module "enrichment_idempotency_table" {
   source = "../modules/dynamodb-table"
 

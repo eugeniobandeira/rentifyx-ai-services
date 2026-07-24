@@ -50,7 +50,7 @@ data "aws_ssm_parameter" "kafka_bootstrap_servers" {
 # reference back to the broker's SG is needed here.
 resource "aws_security_group" "enrichment_lambda" {
   name        = "${var.prefix}-enrichment-lambda-sg"
-  description = "Egress-only SG for the enrichment Lambda - VPC-attached to reach rentifyx-platform's self-hosted Kafka broker"
+  description = "Egress-only SG for the enrichment Lambda - VPC-attached to reach the rentifyx-platform self-hosted Kafka broker"
   vpc_id      = data.terraform_remote_state.platform.outputs.vpc_id
 
   egress {
@@ -76,12 +76,12 @@ resource "aws_lambda_function" "enrichment" {
   timeout     = var.timeout
   memory_size = var.memory_size
 
-  # rentifyx-platform's root outputs only expose public_subnets (not
-  # private_subnets) today, so this mirrors rentifyx-identity-api's EC2
-  # module and lambda-moderation exactly (public_subnets[0]) rather than
-  # inventing a private-subnet path platform doesn't currently output.
+  # Private subnet, not public - same fix as lambda-moderation (confirmed
+  # the hard way against real AWS 2026-07-24: Lambda ENIs never get a
+  # public IP, so public_subnets left this function with zero egress to
+  # Bedrock/S3/DynamoDB/SQS).
   vpc_config {
-    subnet_ids         = [data.terraform_remote_state.platform.outputs.public_subnets[0]]
+    subnet_ids         = [data.terraform_remote_state.platform.outputs.private_subnets[0]]
     security_group_ids = [aws_security_group.enrichment_lambda.id]
   }
 

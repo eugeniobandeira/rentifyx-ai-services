@@ -15,7 +15,7 @@ output "security_group_id" {
 
 output "subnet_ids" {
   description = "Subnet IDs this Lambda is VPC-attached to, so a downstream Kafka event-source-mapping module doesn't need to re-derive VPC placement"
-  value       = [data.terraform_remote_state.platform.outputs.public_subnets[0]]
+  value       = [data.terraform_remote_state.platform.outputs.private_subnets[0]]
 }
 
 output "kafka_bootstrap_servers" {

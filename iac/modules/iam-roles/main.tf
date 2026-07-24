@@ -77,6 +77,18 @@ resource "aws_iam_role_policy" "moderation" {
   policy = data.aws_iam_policy_document.moderation.json
 }
 
+# Both moderation and enrichment are VPC-attached (to reach the
+# rentifyx-platform self-hosted Kafka broker) - Lambda VPC attachment always
+# requires ec2:CreateNetworkInterface/DeleteNetworkInterface/
+# DescribeNetworkInterfaces on the execution role, confirmed the hard way
+# against real AWS 2026-07-24 (CreateFunction failed with
+# "does not have permissions to call CreateNetworkInterface on EC2" without
+# this). AWS's own managed policy is the standard way to grant it.
+resource "aws_iam_role_policy_attachment" "moderation_vpc_access" {
+  role       = aws_iam_role.moderation.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 # --- Enrichment ---------------------------------------------------------
 
 data "aws_iam_policy_document" "enrichment" {
@@ -115,6 +127,25 @@ data "aws_iam_policy_document" "enrichment" {
 
     resources = [var.enrichment_failure_dlq_arn]
   }
+
+  # Self-managed Kafka event source mappings need these Describe permissions
+  # on top of AWSLambdaVPCAccessExecutionRole's CreateNetworkInterface set -
+  # confirmed the hard way against real AWS 2026-07-24
+  # (CreateEventSourceMapping failed with "Cannot access security groups...
+  # ensure the role can perform the 'ec2:DescribeSecurityGroups' action").
+  # No resource-level scoping support for these Describe actions.
+  statement {
+    sid    = "KafkaEventSourceMappingVpcDescribe"
+    effect = "Allow"
+
+    actions = [
+      "ec2:DescribeSecurityGroups",
+      "ec2:DescribeSubnets",
+      "ec2:DescribeVpcs",
+    ]
+
+    resources = ["*"]
+  }
 }
 
 resource "aws_iam_role" "enrichment" {
@@ -126,6 +157,11 @@ resource "aws_iam_role_policy" "enrichment" {
   name   = "${var.prefix}-enrichment-policy"
   role   = aws_iam_role.enrichment.id
   policy = data.aws_iam_policy_document.enrichment.json
+}
+
+resource "aws_iam_role_policy_attachment" "enrichment_vpc_access" {
+  role       = aws_iam_role.enrichment.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 # --- Dedupe (DEF-AI-001, role scaffolded ahead of implementation) -------

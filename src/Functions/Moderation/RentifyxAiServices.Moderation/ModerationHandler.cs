@@ -6,6 +6,13 @@ using Amazon.SQS;
 using Confluent.Kafka;
 using Microsoft.Extensions.Logging.Abstractions;
 
+// Required for the Lambda runtime to deserialize S3Event off the wire -
+// missing this fails every real invocation with LambdaValidationException
+// (confirmed the hard way against a real S3 upload, 2026-07-24; unit/
+// integration tests call ModerationHandler.FunctionHandler directly and
+// never exercise the runtime's own deserialization path).
+[assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
+
 namespace RentifyxAiServices.Moderation;
 
 public sealed class ModerationHandler
