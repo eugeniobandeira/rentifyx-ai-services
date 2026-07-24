@@ -91,9 +91,9 @@
   - **Still blocked, not resolved this session**: the Enrichment Lambda's Kafka event source mapping (`kafka_event_source_mapping.enrichment`, UUID `56c0e630-9b93-444f-9911-62afc47dc1b8`) stays `State: Enabled` / `LastProcessingResult: PROBLEM: Connection error` even with correct subnet/SG/CIDR (verified: ESM's subnet is the exact same subnet the broker itself lives in, SG allows `10.0.0.0/16:9092`). The broker's own SSM Agent lost connection shortly after boot and never recovered, while the Moderation Lambda's own direct connection to the same broker did briefly succeed once — pointing at real Kafka/EC2-instance-level instability on `rentifyx-platform`'s side (likely `t3.micro` under-provisioned for a JVM+KRaft broker, or no process auto-restart configured), not a networking or IAM misconfiguration in this repo. Out of this repo's scope to fix further without editing `rentifyx-platform`'s `modules/kafka` itself.
   - Correlation ID propagation across the S3→Moderation→Kafka→Enrichment→Kafka chain discussed and deliberately deferred (see Open Items) rather than implemented mid-deploy.
 
-## Live-deploy teardown (real AWS resources — destroy when done testing)
+## Live-deploy teardown — DONE (2026-07-24)
 
-Two repos have real applied state right now. Destroy this repo first (it depends on `rentifyx-platform` via `terraform_remote_state`), then `rentifyx-platform`.
+Both repos' real state was destroyed the same session it was applied (user request, after confirming the deploy worked end-to-end for Moderation). `terraform state list` confirmed empty in both repos post-destroy. Steps actually run, in order (kept below as the reference procedure if this is ever redone):
 
 1. Empty the media bucket first — `aws_s3_bucket.media` has no `force_destroy`, so `terraform destroy` fails on a non-empty bucket (it has real test uploads):
    ```
@@ -114,7 +114,10 @@ Two repos have real applied state right now. Destroy this repo first (it depends
      -var="ses_identity=noreply@rentifyx.invalid" \
      -auto-approve
    ```
-4. Real resources currently costing money while up: the NAT Gateway (~$0.045/hr + data) is the significant one; the Kafka broker is `t3.micro` (minimal cost); DynamoDB/SQS/S3/Lambda are all pay-per-use with near-zero idle cost.
+4. Real resources that were costing money while up: the NAT Gateway (~$0.045/hr + data) was the significant one; the Kafka broker was `t3.small` (minimal cost); DynamoDB/SQS/S3/Lambda are all pay-per-use with near-zero idle cost. All gone now.
+5. First destroy attempt on this repo's root config partially hung ~18min on Lambda ENI detachment before hitting a transient local DNS failure (`dial tcp: lookup ec2.sa-east-1.amazonaws.com: no such host` — this session's environment, not AWS) with 1 resource (`moderation_lambda`'s security group) left undestroyed; a plain re-run of the same `terraform destroy` command finished it in 2s. Lambda ENI detachment lag before an SG can be deleted is a known AWS behavior, not a bug.
+
+**Root cause of the Kafka ESM connection failure, found and fixed after teardown:** `rentifyx-platform`'s Kafka broker ran on `t3.micro` (1GiB RAM) with no JVM heap cap — classic OOM setup (Docker + Kafka JVM + OS + SSM Agent all fighting over 1GiB). The instance's own SSM Agent losing connection at boot and never recovering was the tell. Fixed in `rentifyx-platform` (commit `c8bf406`, not applied — infra was already torn down): bumped to `t3.small` (2GiB) and added `--memory=1g` plus `KAFKA_HEAP_OPTS="-Xmx512m -Xms512m"` to the broker's `docker run` in `modules/kafka/userdata.sh.tpl`. Whoever redeploys next should confirm the ESM connects cleanly this time — not re-verified against real AWS since the fix was made after teardown, per user instruction to destroy first.
 
 ## Open Items
 
