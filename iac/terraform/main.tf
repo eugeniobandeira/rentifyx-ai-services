@@ -28,6 +28,8 @@ module "iam_roles" {
   moderation_review_queue_arn      = module.review_queue.review_queue_arn
   moderation_failure_dlq_arn       = module.review_queue.moderation_failure_dlq_arn
   bedrock_model_arn                = var.bedrock_model_arn
+  enrichment_idempotency_table_arn = module.enrichment_idempotency_table.table_arn
+  enrichment_failure_dlq_arn       = module.review_queue.enrichment_failure_dlq_arn
 }
 
 # Manual-review SQS queue + its DLQ, and the separate Rekognition-failure DLQ
@@ -65,4 +67,38 @@ module "s3_trigger" {
   lambda_function_name = module.lambda_moderation.function_name
   filter_prefix        = var.filter_prefix
   filter_suffix        = var.filter_suffix
+}
+
+# Enrichment's own idempotency table (E-03b) - generic single-partition-key
+# module, reusable by Moderation's still-unbacked idempotency table later
+# (out of scope here, see .specs/features/e03b-enrichment-iac/spec.md).
+module "enrichment_idempotency_table" {
+  source = "../modules/dynamodb-table"
+
+  table_name = "${local.prefix}-enrichment-idempotency"
+}
+
+# Enrichment Lambda function (E-03) - VPC-attached to reach rentifyx-platform's
+# self-hosted Kafka broker, reads that repo's state itself via
+# terraform_remote_state (see iac/modules/lambda-enrichment/main.tf).
+module "lambda_enrichment" {
+  source = "../modules/lambda-enrichment"
+
+  prefix                 = local.prefix
+  enrichment_role_arn    = module.iam_roles.enrichment_role_arn
+  lambda_package_path    = var.enrichment_lambda_package_path
+  idempotency_table_name = module.enrichment_idempotency_table.table_name
+  failure_dlq_url        = module.review_queue.enrichment_failure_dlq_url
+}
+
+# Kafka event source mapping (self-managed broker, not MSK) wiring the
+# Enrichment Lambda to consume Moderation's AssetMediaModerated topic.
+module "kafka_event_source_mapping" {
+  source = "../modules/kafka-event-source-mapping"
+
+  prefix                  = local.prefix
+  function_name           = module.lambda_enrichment.function_name
+  kafka_bootstrap_servers = module.lambda_enrichment.kafka_bootstrap_servers
+  subnet_ids              = module.lambda_enrichment.subnet_ids
+  security_group_id       = module.lambda_enrichment.security_group_id
 }

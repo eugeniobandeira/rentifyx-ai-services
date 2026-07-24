@@ -88,6 +88,33 @@ data "aws_iam_policy_document" "enrichment" {
 
     resources = [var.bedrock_model_arn]
   }
+
+  statement {
+    sid    = "S3Read"
+    effect = "Allow"
+
+    actions = ["s3:GetObject"]
+
+    resources = ["${var.media_bucket_arn}/*"]
+  }
+
+  statement {
+    sid    = "IdempotencyTableWrite"
+    effect = "Allow"
+
+    actions = ["dynamodb:PutItem"]
+
+    resources = [var.enrichment_idempotency_table_arn]
+  }
+
+  statement {
+    sid    = "FailureDlqSend"
+    effect = "Allow"
+
+    actions = ["sqs:SendMessage"]
+
+    resources = [var.enrichment_failure_dlq_arn]
+  }
 }
 
 resource "aws_iam_role" "enrichment" {

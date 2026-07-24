@@ -9,6 +9,10 @@ resource "aws_sqs_queue" "moderation_failure_dlq" {
   name = "${var.prefix}-moderation-failure-dlq"
 }
 
+resource "aws_sqs_queue" "enrichment_failure_dlq" {
+  name = "${var.prefix}-enrichment-failure-dlq"
+}
+
 resource "aws_sqs_queue" "review" {
   name = "${var.prefix}-moderation-review-queue"
 

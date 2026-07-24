@@ -79,3 +79,10 @@ variable "bedrock_model_arn" {
   description = "ARN of the specific Bedrock model the enrichment Lambda is allowed to invoke - no default, decided when E-03 lands"
   type        = string
 }
+
+# --- Enrichment Lambda deployment (E-03b) -----------------------------------
+
+variable "enrichment_lambda_package_path" {
+  description = "Path to the built deployment package (zip) for the enrichment Lambda, produced by `dotnet lambda package` / the CI build step - separate package from moderation's, no default, must be supplied at apply time"
+  type        = string
+}
