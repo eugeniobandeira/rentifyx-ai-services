@@ -1,12 +1,13 @@
 # S3 -> Moderation Lambda trigger. The bucket and the Lambda are both owned by other
-# modules (bucket: likely rentifyx-platform or a root config not yet written; Lambda:
+# modules (bucket: iac/modules/media-bucket, this repo's own root config; Lambda:
 # iac/modules/lambda-moderation, built in parallel) — this module only wires the
 # notification and the invoke permission between them.
 #
-# filter_prefix/filter_suffix intentionally have no baked-in convention: the
-# assets/{ownerId}/{assetId}/{filename} key shape AssetKeyConventionFilter assumes is
-# still unconfirmed with asset-registry-api (G-001). The root module must supply the
-# real values once confirmed.
+# filter_prefix defaults to "assets/" (the root module's variables.tf) - the
+# assets/{ownerId}/{assetId}/{filename} key shape AssetKeyConventionFilter assumes,
+# confirmed cross-repo against asset-registry-api's real S3MediaStorageService (G-001,
+# closed) and already proven working in a real deploy. This module itself still takes
+# it as a plain variable rather than hardcoding it, so a caller can override.
 
 resource "aws_lambda_permission" "allow_s3_invoke_moderation" {
   statement_id  = "${var.prefix}-allow-s3-invoke-moderation"

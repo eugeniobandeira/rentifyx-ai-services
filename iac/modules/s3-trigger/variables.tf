@@ -4,7 +4,7 @@ variable "prefix" {
 }
 
 variable "bucket_id" {
-  description = "ID (name) of the S3 bucket to attach the notification configuration to. This module does not create the bucket — it is owned elsewhere (likely rentifyx-platform or a not-yet-written root config)."
+  description = "ID (name) of the S3 bucket to attach the notification configuration to. This module does not create the bucket — it is owned by iac/modules/media-bucket in this repo's own root config."
   type        = string
 }
 
@@ -24,12 +24,13 @@ variable "lambda_function_name" {
 }
 
 # The S3 object-key convention (assets/{ownerId}/{assetId}/{filename}) that
-# AssetKeyConventionFilter assumes is UNCONFIRMED cross-repo with asset-registry-api
-# (tracked as gap G-001, see .specs/codebase/INTEGRATIONS.md and .specs/project/STATE.md
-# Open Items). No default/convention is hardcoded here — the calling root module must
-# supply the real prefix/suffix once confirmed. An empty string means "no filter".
+# AssetKeyConventionFilter assumes was confirmed cross-repo with asset-registry-api's
+# real S3MediaStorageService (G-001, closed 2026-07-27; see .specs/project/STATE.md).
+# No default is hardcoded in this module itself — the calling root module supplies it
+# (its own variables.tf defaults to "assets/"), so this module stays reusable if the
+# convention ever needs to change without editing this file.
 variable "filter_prefix" {
-  description = "S3 object key prefix filter for the ObjectCreated notification. No default convention is baked in here (G-001 unconfirmed) — supply the real value from the root module, or leave empty for no prefix filter."
+  description = "S3 object key prefix filter for the ObjectCreated notification. No default here — supplied by the calling root module (defaults to \"assets/\" there). Leave empty for no prefix filter."
   type        = string
   default     = ""
 }

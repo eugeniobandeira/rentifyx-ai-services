@@ -76,8 +76,8 @@ module "lambda_moderation" {
 }
 
 # S3 ObjectCreated notification + aws_lambda_permission wiring the bucket to
-# the moderation Lambda. filter_prefix/filter_suffix default to "" (no
-# convention baked in - G-001 unconfirmed cross-repo with asset-registry-api).
+# the moderation Lambda. filter_prefix defaults to "assets/" - the real
+# convention confirmed cross-repo with asset-registry-api (G-001, closed).
 module "s3_trigger" {
   source = "../modules/s3-trigger"
 
