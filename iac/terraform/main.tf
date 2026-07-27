@@ -79,18 +79,21 @@ module "lambda_moderation" {
 }
 
 # S3 ObjectCreated notification + aws_lambda_permission wiring the bucket to
-# the moderation Lambda. filter_prefix defaults to "assets/" - the real
-# convention confirmed cross-repo with asset-registry-api (G-001, closed).
+# both the moderation and dedupe Lambdas. filter_prefix defaults to "assets/"
+# - the real convention confirmed cross-repo with asset-registry-api (G-001,
+# closed).
 module "s3_trigger" {
   source = "../modules/s3-trigger"
 
-  prefix               = local.prefix
-  bucket_id            = module.media_bucket.bucket_id
-  bucket_arn           = module.media_bucket.bucket_arn
-  lambda_function_arn  = module.lambda_moderation.function_arn
-  lambda_function_name = module.lambda_moderation.function_name
-  filter_prefix        = var.filter_prefix
-  filter_suffix        = var.filter_suffix
+  prefix                      = local.prefix
+  bucket_id                   = module.media_bucket.bucket_id
+  bucket_arn                  = module.media_bucket.bucket_arn
+  lambda_function_arn         = module.lambda_moderation.function_arn
+  lambda_function_name        = module.lambda_moderation.function_name
+  dedupe_lambda_function_arn  = module.lambda_dedupe.function_arn
+  dedupe_lambda_function_name = module.lambda_dedupe.function_name
+  filter_prefix               = var.filter_prefix
+  filter_suffix               = var.filter_suffix
 }
 
 # Enrichment's own idempotency table (E-03b) - generic single-partition-key
@@ -129,9 +132,6 @@ module "kafka_event_source_mapping" {
 # Dedupe's own tables (perceptual-hash dedupe, ADR-AI-007): one idempotency
 # table keyed by S3 object/ETag (same shape as moderation/enrichment's), one
 # mapping perceptual image hash to the first asset that produced it.
-# iac/modules/lambda-dedupe (the Lambda function + S3 trigger wiring itself)
-# is not yet built — code shipped ahead of its IaC, same order Moderation and
-# Enrichment took.
 module "dedupe_idempotency_table" {
   source = "../modules/dynamodb-table"
 
@@ -143,4 +143,18 @@ module "dedupe_hash_table" {
 
   table_name = "${local.prefix}-dedupe-image-hashes"
   hash_key   = "ImageHash"
+}
+
+# Dedupe Lambda function (DEF-AI-001, ADR-AI-007) - VPC-attached to reach
+# rentifyx-platform's self-hosted Kafka broker, same pattern as
+# lambda_moderation (S3-triggered, not Kafka-triggered like lambda_enrichment).
+module "lambda_dedupe" {
+  source = "../modules/lambda-dedupe"
+
+  prefix                 = local.prefix
+  dedupe_role_arn        = module.iam_roles.dedupe_role_arn
+  lambda_package_path    = var.dedupe_lambda_package_path
+  idempotency_table_name = module.dedupe_idempotency_table.table_name
+  hash_table_name        = module.dedupe_hash_table.table_name
+  failure_dlq_url        = module.review_queue.dedupe_failure_dlq_url
 }

@@ -23,6 +23,16 @@ variable "lambda_function_name" {
   type        = string
 }
 
+variable "dedupe_lambda_function_arn" {
+  description = "ARN of the dedupe Lambda function to invoke on ObjectCreated (iac/modules/lambda-dedupe output)"
+  type        = string
+}
+
+variable "dedupe_lambda_function_name" {
+  description = "Name of the dedupe Lambda function to invoke on ObjectCreated (iac/modules/lambda-dedupe output)"
+  type        = string
+}
+
 # The S3 object-key convention (assets/{ownerId}/{assetId}/{filename}) that
 # AssetKeyConventionFilter assumes was confirmed cross-repo with asset-registry-api's
 # real S3MediaStorageService (G-001, closed 2026-07-27; see .specs/project/STATE.md).

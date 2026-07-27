@@ -56,6 +56,8 @@ jobs:
             project: src/Functions/Moderation/RentifyxAiServices.Moderation
           - function: Enrichment
             project: src/Functions/Enrichment/RentifyxAiServices.Enrichment
+          - function: Dedupe
+            project: src/Functions/Dedupe/RentifyxAiServices.Dedupe
 
     steps:
       - name: Checkout
