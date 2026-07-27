@@ -42,6 +42,9 @@ module "iam_roles" {
   bedrock_model_arn                = var.bedrock_model_arn
   enrichment_idempotency_table_arn = module.enrichment_idempotency_table.table_arn
   enrichment_failure_dlq_arn       = module.review_queue.enrichment_failure_dlq_arn
+  dedupe_idempotency_table_arn     = module.dedupe_idempotency_table.table_arn
+  dedupe_hash_table_arn            = module.dedupe_hash_table.table_arn
+  dedupe_failure_dlq_arn           = module.review_queue.dedupe_failure_dlq_arn
 }
 
 # Moderation's own idempotency table (E-03c) - adopts the same generic
@@ -121,4 +124,23 @@ module "kafka_event_source_mapping" {
   kafka_bootstrap_servers = module.lambda_enrichment.kafka_bootstrap_servers
   subnet_ids              = module.lambda_enrichment.subnet_ids
   security_group_id       = module.lambda_enrichment.security_group_id
+}
+
+# Dedupe's own tables (perceptual-hash dedupe, ADR-AI-007): one idempotency
+# table keyed by S3 object/ETag (same shape as moderation/enrichment's), one
+# mapping perceptual image hash to the first asset that produced it.
+# iac/modules/lambda-dedupe (the Lambda function + S3 trigger wiring itself)
+# is not yet built — code shipped ahead of its IaC, same order Moderation and
+# Enrichment took.
+module "dedupe_idempotency_table" {
+  source = "../modules/dynamodb-table"
+
+  table_name = "${local.prefix}-dedupe-idempotency"
+}
+
+module "dedupe_hash_table" {
+  source = "../modules/dynamodb-table"
+
+  table_name = "${local.prefix}-dedupe-image-hashes"
+  hash_key   = "ImageHash"
 }

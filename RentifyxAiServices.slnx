@@ -14,6 +14,7 @@
     <Project Path="src/Shared/RentifyxAiServices.Shared/RentifyxAiServices.Shared.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/RentifyxAiServices.Dedupe.Tests/RentifyxAiServices.Dedupe.Tests.csproj" />
     <Project Path="tests/RentifyxAiServices.Enrichment.Tests/RentifyxAiServices.Enrichment.Tests.csproj" />
     <Project Path="tests/RentifyxAiServices.IntegrationTests/RentifyxAiServices.IntegrationTests.csproj" />
     <Project Path="tests/RentifyxAiServices.Moderation.Tests/RentifyxAiServices.Moderation.Tests.csproj" />

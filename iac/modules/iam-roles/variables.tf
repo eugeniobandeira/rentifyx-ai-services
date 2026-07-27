@@ -37,3 +37,18 @@ variable "enrichment_failure_dlq_arn" {
   description = "ARN of the SQS DLQ enrichment sends to when processing fails after retries are exhausted (iac/modules/review-queue output enrichment_failure_dlq_arn)"
   type        = string
 }
+
+variable "dedupe_idempotency_table_arn" {
+  description = "ARN of the DynamoDB table the dedupe Lambda uses to skip re-processing the same S3 object/ETag (iac/modules/dynamodb-table output table_arn)"
+  type        = string
+}
+
+variable "dedupe_hash_table_arn" {
+  description = "ARN of the DynamoDB table mapping perceptual image hash to the first asset that produced it (iac/modules/dynamodb-table output table_arn)"
+  type        = string
+}
+
+variable "dedupe_failure_dlq_arn" {
+  description = "ARN of the SQS DLQ dedupe sends to when S3 read or hash-store operations fail after retries are exhausted (iac/modules/review-queue output dedupe_failure_dlq_arn)"
+  type        = string
+}

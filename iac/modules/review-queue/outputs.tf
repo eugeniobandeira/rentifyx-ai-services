@@ -32,3 +32,13 @@ output "enrichment_failure_dlq_url" {
   description = "URL of the DLQ for Enrichment failures (needed by iac/modules/lambda-enrichment to inject its failure DLQ URL - sqs:SendMessage needs a queue URL, not just an ARN)"
   value       = aws_sqs_queue.enrichment_failure_dlq.url
 }
+
+output "dedupe_failure_dlq_arn" {
+  description = "ARN of the DLQ for Dedupe failures (S3 read or hash-store failures after retries are exhausted)"
+  value       = aws_sqs_queue.dedupe_failure_dlq.arn
+}
+
+output "dedupe_failure_dlq_url" {
+  description = "URL of the DLQ for Dedupe failures (needed by iac/modules/lambda-dedupe to inject FAILURE_DLQ_URL - sqs:SendMessage needs a queue URL, not just an ARN)"
+  value       = aws_sqs_queue.dedupe_failure_dlq.url
+}

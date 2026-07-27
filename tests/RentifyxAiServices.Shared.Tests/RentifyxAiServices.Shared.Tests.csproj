@@ -29,6 +29,7 @@
 
   <ItemGroup>
     <Using Include="RentifyxAiServices.SharedKernel.Idempotency" />
+    <Using Include="RentifyxAiServices.SharedKernel.KeyConvention" />
   </ItemGroup>
 
 </Project>
