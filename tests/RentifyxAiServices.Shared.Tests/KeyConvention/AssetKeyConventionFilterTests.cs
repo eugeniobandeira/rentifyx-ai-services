@@ -1,7 +1,7 @@
-﻿using FluentAssertions;
+using FluentAssertions;
 using Xunit;
 
-namespace RentifyxAiServices.Moderation.Tests;
+namespace RentifyxAiServices.Shared.Tests.KeyConvention;
 
 public class AssetKeyConventionFilterTests
 {

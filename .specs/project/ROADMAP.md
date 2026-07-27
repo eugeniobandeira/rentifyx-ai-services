@@ -19,4 +19,4 @@
 
 ## Deferred
 
-- [ ] Duplicate/fraud detection implementation (DEF-AI-001)
+- [x] Duplicate/fraud detection implementation (DEF-AI-001) — shipped 2026-07-27 via perceptual hashing (average hash / aHash), ADR-AI-007. `iac/modules/lambda-dedupe` (Lambda function resource + S3 trigger) still not built, tracked in STATE.md.

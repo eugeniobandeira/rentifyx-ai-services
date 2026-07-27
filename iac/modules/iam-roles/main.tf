@@ -164,18 +164,49 @@ resource "aws_iam_role_policy_attachment" "enrichment_vpc_access" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
-# --- Dedupe (DEF-AI-001, role scaffolded ahead of implementation) -------
+# --- Dedupe (DEF-AI-001, implemented via perceptual hashing - ADR-AI-007) --
+#
+# Rekognition CompareFaces was scoped here ahead of implementation but never
+# applies: asset photos are of equipment/objects, not faces. Replaced with the
+# real permissions DedupeService/DedupeHandler use: S3 read on the media
+# bucket, DynamoDB read/write on the idempotency table and the image-hash
+# table, and SQS send on the dedupe failure DLQ.
 
 data "aws_iam_policy_document" "dedupe" {
   statement {
-    sid    = "RekognitionCompareFaces"
+    sid    = "MediaBucketRead"
     effect = "Allow"
 
-    # Placeholder action set — the dedupe Lambda itself is deferred (DEF-AI-001).
-    # Scoped narrowly now so the role isn't a blank check when implementation lands.
-    actions = ["rekognition:CompareFaces"]
+    actions = ["s3:GetObject"]
 
-    resources = ["*"] # CompareFaces does not support resource-level scoping
+    resources = ["${var.media_bucket_arn}/*"]
+  }
+
+  statement {
+    sid    = "IdempotencyTableWrite"
+    effect = "Allow"
+
+    actions = ["dynamodb:PutItem"]
+
+    resources = [var.dedupe_idempotency_table_arn]
+  }
+
+  statement {
+    sid    = "ImageHashTableReadWrite"
+    effect = "Allow"
+
+    actions = ["dynamodb:GetItem", "dynamodb:PutItem"]
+
+    resources = [var.dedupe_hash_table_arn]
+  }
+
+  statement {
+    sid    = "FailureDlqSend"
+    effect = "Allow"
+
+    actions = ["sqs:SendMessage"]
+
+    resources = [var.dedupe_failure_dlq_arn]
   }
 }
 

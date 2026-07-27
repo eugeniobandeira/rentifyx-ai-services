@@ -38,6 +38,14 @@
     <PackageVersion Include="Confluent.Kafka" Version="2.10.0" />
   </ItemGroup>
 
+  <ItemGroup Label="Imaging">
+    <!-- Dedupe's average-hash perceptual hashing (grayscale + resize). Pinned to the last 3.x
+         release (3.1.12, confirmed via the live NuGet flat-container API) - 4.0.0 requires a paid
+         Six Labors commercial license (build fails outright with "No Six Labors license found"
+         without one); the 3.x line is still Apache-2.0/Six-Labors-Split-License free-tier. -->
+    <PackageVersion Include="SixLabors.ImageSharp" Version="3.1.12" />
+  </ItemGroup>
+
   <ItemGroup Label="Common">
     <PackageVersion Include="ErrorOr" Version="2.1.1" />
     <PackageVersion Include="FluentValidation" Version="12.1.1" />

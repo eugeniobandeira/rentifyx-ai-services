@@ -13,6 +13,12 @@ resource "aws_sqs_queue" "enrichment_failure_dlq" {
   name = "${var.prefix}-enrichment-failure-dlq"
 }
 
+# Dedupe failure DLQ (S3 GetObject or hash-store failures after retries are
+# exhausted) - same pattern as moderation/enrichment's own DLQs above.
+resource "aws_sqs_queue" "dedupe_failure_dlq" {
+  name = "${var.prefix}-dedupe-failure-dlq"
+}
+
 resource "aws_sqs_queue" "review" {
   name = "${var.prefix}-moderation-review-queue"
 
