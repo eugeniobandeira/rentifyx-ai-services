@@ -1,3 +1,13 @@
+output "media_bucket_id" {
+  description = "Name of the asset media S3 bucket - consumed cross-repo by rentifyx-asset-registry-api via terraform_remote_state, since the service reacting to S3 ObjectCreated events (Moderation/Enrichment/Dedupe) owns the bucket, not the service issuing presigned upload URLs (G-001, ADR-AI-002 domain isolation still holds at the IAM/role level)"
+  value       = module.media_bucket.bucket_id
+}
+
+output "media_bucket_arn" {
+  description = "ARN of the asset media S3 bucket - consumed cross-repo by rentifyx-asset-registry-api via terraform_remote_state"
+  value       = module.media_bucket.bucket_arn
+}
+
 output "moderation_role_arn" {
   description = "ARN of the moderation Lambda's IAM role"
   value       = module.iam_roles.moderation_role_arn
