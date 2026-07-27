@@ -81,3 +81,5 @@ External dependencies: S3, Rekognition, Bedrock Runtime, Kafka (self-hosted EC2/
 - `.specs/features/*/spec.md`, `tasks.md` — per-feature specs and task breakdown
 - `.specs/codebase/*.md` — architecture/stack/conventions summaries (this file is derived in part from them; update both if they drift)
 - `docs/adr/` — accepted architecture decisions (ADR-AI-001 through ADR-AI-006 so far)
+
+Cross-repo system architecture (all RentifyX services, shared infra, Kafka event contracts) lives in `rentifyx-platform`, not duplicated here: [`../rentifyx-platform/docs/system-architecture.md`](../rentifyx-platform/docs/system-architecture.md) (or `.html` for a rendered view with the diagram).
