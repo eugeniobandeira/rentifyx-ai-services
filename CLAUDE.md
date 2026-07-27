@@ -51,7 +51,7 @@ External dependencies: S3, Rekognition, Bedrock Runtime, Kafka (self-hosted EC2/
 ### Cross-repo infra
 
 - `rentifyx-platform` (sibling repo, `C:\Users\Eugenio\Projects\study\rentifyx-platform` locally) owns the shared VPC and the self-hosted Kafka broker — this repo's Lambdas must be VPC-attached to reach it, and read the bootstrap address via that repo's `terraform_remote_state` output (`kafka_ssm_parameter_path`), same pattern as `rentifyx-identity-api`'s `iac/terraform/main.tf`. `iac/modules/lambda-moderation` does this itself internally (reads `terraform_remote_state` directly, not via the root config) — `iac/modules/lambda-enrichment` (unbuilt) will need the same for its own Kafka event source mapping.
-- `rentifyx-asset-registry-api` (sibling repo) is the consumer of this repo's `AssetMediaModerated`/`AssetEnrichmentSuggested` Kafka events — see `docs/adr/ADR-AI-003/004` here and its own `ADR-AR-008` for the cross-repo contract, and `.specs/project/STATE.md` there for its `G-001` (S3 key convention still unconfirmed) tracking. Its own consumers for these events don't exist yet as of E-03.
+- `rentifyx-asset-registry-api` (sibling repo) is the consumer of this repo's `AssetMediaModerated`/`AssetEnrichmentSuggested` Kafka events — see `docs/adr/ADR-AI-003/004` here and its own `ADR-AR-008` for the cross-repo contract. The S3 key convention both repos assume (`assets/{ownerId}/{assetId}/{filename}`) was confirmed cross-repo 2026-07-27 (`G-001`, closed — see `.specs/project/STATE.md`). Its own consumers for these events don't exist yet as of E-03.
 
 ### Deploy and runtime model (ADR-AI-001)
 

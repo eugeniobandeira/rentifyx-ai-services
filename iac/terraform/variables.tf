@@ -23,9 +23,9 @@ variable "app_name" {
 # module.media_bucket.
 
 variable "filter_prefix" {
-  description = "S3 object key prefix filter for the moderation trigger - deliberately no default convention baked in (G-001 unconfirmed cross-repo). Leave empty for no prefix filter."
+  description = "S3 object key prefix filter for the moderation trigger. Defaults to \"assets/\" - the assets/{ownerId}/{assetId}/{filename} convention AssetKeyConventionFilter assumes, confirmed 2026-07-27 against rentifyx-asset-registry-api's real S3MediaStorageService.GeneratePresignedUploadUrlAsync (G-001, closed) and already proven working end-to-end in the 2026-07-24 live deploy test. Override if a future convention change requires it."
   type        = string
-  default     = ""
+  default     = "assets/"
 }
 
 variable "filter_suffix" {
