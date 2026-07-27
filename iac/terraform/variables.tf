@@ -65,3 +65,10 @@ variable "enrichment_lambda_package_path" {
   description = "Path to the built deployment package (zip) for the enrichment Lambda, produced by `dotnet lambda package` / the CI build step - separate package from moderation's, no default, must be supplied at apply time"
   type        = string
 }
+
+# --- Dedupe Lambda deployment (DEF-AI-001, ADR-AI-007) ----------------------
+
+variable "dedupe_lambda_package_path" {
+  description = "Path to the built deployment package (zip) for the dedupe Lambda, produced by `dotnet lambda package` / the CI build step - separate package from moderation's/enrichment's, no default, must be supplied at apply time"
+  type        = string
+}
