@@ -207,3 +207,9 @@ terraform init -backend-config="bucket=rentifyx-tfstate-166613156216" \
 terraform validate
 terraform fmt -check
 ```
+
+## Windows / Git Bash gotchas (deploying from this OS)
+
+- **MSYS path conversion silently mangles any argument starting with `/`** — `aws ssm get-parameter --name "/rentifyx/..."` or `aws logs delete-log-group --log-group-name "/aws/lambda/..."` get rewritten to a Windows path before AWS ever sees them, producing misleading errors (`ParameterNotFound` for a parameter that exists, `Invalid...` for a log group that exists). Prefix the command with `MSYS_NO_PATHCONV=1` whenever an argument starts with `/`.
+- A stale `AWS_ACCESS_KEY_ID`/`AWS_SECRET_ACCESS_KEY`/`AWS_SESSION_TOKEN` in the shell session silently overrides `--profile`/`AWS_PROFILE` (SDK credential-resolution order puts env vars first). Prefix real commands with `env -u AWS_ACCESS_KEY_ID -u AWS_SECRET_ACCESS_KEY -u AWS_SESSION_TOKEN AWS_PROFILE=rentifyx-admin AWS_SDK_LOAD_CONFIG=1` to guarantee the right credentials are used.
+- `terraform destroy`/any `plan` on the root config requires real values for `lambda_package_path`/`enrichment_lambda_package_path`/`dedupe_lambda_package_path` even when you only want to destroy — `filebase64sha256()` needs a file to actually exist on disk. A one-line placeholder (`echo PK > dummy.zip`) satisfies it without needing a real build artifact.
