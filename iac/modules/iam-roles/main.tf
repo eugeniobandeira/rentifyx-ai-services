@@ -220,3 +220,14 @@ resource "aws_iam_role_policy" "dedupe" {
   role   = aws_iam_role.dedupe.id
   policy = data.aws_iam_policy_document.dedupe.json
 }
+
+# Dedupe is VPC-attached too (publishes to the same self-hosted Kafka broker
+# Moderation/Enrichment use) - needs the same AWSLambdaVPCAccessExecutionRole
+# attachment those two have, confirmed the hard way against real AWS
+# 2026-07-27 (CreateFunction failed with "does not have permissions to call
+# CreateNetworkInterface on EC2" without it, same bug Moderation hit
+# 2026-07-24 - see that role's own comment above).
+resource "aws_iam_role_policy_attachment" "dedupe_vpc_access" {
+  role       = aws_iam_role.dedupe.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
