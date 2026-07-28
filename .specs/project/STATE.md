@@ -10,6 +10,8 @@
 
 ## Current Status
 
+**⚠️ 2026-07-28: full stack destroyed, `module.media_bucket` briefly re-applied alone (to unblock `rentifyx-asset-registry-api`'s plan, which hard-depends on this repo's media bucket remote-state output) to test/fix that repo's JWT bug, then destroyed again the same day.** See `rentifyx-platform`'s STATE.md for the full teardown writeup and a Terraform quirk worth knowing: any `plan`/`destroy` still requires real values for `lambda_package_path`/`enrichment_lambda_package_path`/`dedupe_lambda_package_path` (a throwaway local zip file was created just to satisfy `filebase64sha256()`, not a real deploy artifact). Confirmed fully destroyed again — zero Lambdas, zero DynamoDB, zero S3 buckets beyond the permanent state bucket. All code/IaC stays as documented below regardless.
+
 - Foundation scaffold created for the repository.
 - Solution and initial .NET projects were created and wired into the solution.
 - Infrastructure folder was normalized to `iac/` to match the existing service convention.
