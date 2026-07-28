@@ -1,5 +1,11 @@
 # State
 
+## Quick Status (read this first — everything below is historical detail/changelog)
+
+- **Infra**: nothing deployed right now — full teardown confirmed 2026-07-28. All code/IaC (3 Lambdas, DynamoDB, SQS, SNS, S3 media bucket) is written and validated but not applied.
+- **Don't trust prose claims of "live"/"destroyed" in this file at face value** — verify against the real AWS account before assuming either way.
+- Full history below.
+
 ## Decisions
 
 - Use a multi-Lambda repo with shared event contracts and isolated IAM roles.
